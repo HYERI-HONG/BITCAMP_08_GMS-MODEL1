@@ -5,22 +5,48 @@ import java.sql.*;
 import java.util.List;
 
 import domain.MemberBean;
+import enums.*;
+import factory.*;
+import pool.DBConstant;
+
 
 public class MemberDAOImpl implements MemberDAO {
 
 	private static MemberDAO  instance = new MemberDAOImpl();
 	public static MemberDAO getInstance() {return instance;}
+	Statement state;
+	Connection conn;
 	private MemberDAOImpl() {}
+	
+	
 	@Override
 	public void insertMember(MemberBean member) {
-		// TODO Auto-generated method stub
-		
+		try {
+			DatabaseFactory.createDatabase(Vendor.ORACLE, DBConstant.USERNAME, DBConstant.PASSWORD)
+			.getConnection()
+			.createStatement()
+			.executeUpdate(String.format(MemberQuery.INSERT_MEMBER.toString(),
+					member.getUserId(),
+					member.getName(),
+					member.getPassword(),
+					member.getSsn(),
+					member.getAge()
+					));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
-
 	@Override
 	public List<MemberBean> selectAllMember() {
-		// TODO Auto-generated method stub
-		return null;
+		List<MemberBean> list = null;
+		try {
+			ResultSet rs = state.executeQuery("SELECT * FROM MEMBER");
+			while(rs.next()) {
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return list;
 	}
 
 	@Override
@@ -55,17 +81,17 @@ public class MemberDAOImpl implements MemberDAO {
 	@Override
 	public MemberBean login(MemberBean bean) {
 		MemberBean mem = null;
-		String sql = String.format("SELECT MEM_ID USERID,TEAM_ID TEAMID,NAME,"
-				+ "AGE,ROLL,PASSWORD FROM MEMBER "
-				+ "WHERE MEM_ID LIKE '%s'"
-				+ "AND PASSWORD LIKE '%s'",
-				bean.getUserId(),bean.getPassword());
 		try {
-			Class.forName("oracle.jdbc.driver.OracleDriver");
-			Connection conn = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe",
-					"HRHONG","HRHONG");
-			Statement stmt =conn.createStatement();
-			ResultSet rs = stmt.executeQuery(sql);
+			System.out.println("MemberDAOImpl --- login");
+			ResultSet rs = DatabaseFactory.createDatabase(
+					Vendor.ORACLE, 
+					DBConstant.USERNAME,
+					DBConstant.PASSWORD)
+				.getConnection()
+				.createStatement()
+				.executeQuery(String.format(MemberQuery.LOGIN.toString(),
+						bean.getUserId(),bean.getPassword()));
+		
 			while(rs.next()){
 				 mem = new MemberBean();
 				 mem.setUserId(rs.getString("USERID"));
@@ -73,7 +99,7 @@ public class MemberDAOImpl implements MemberDAO {
 				 mem.setName(rs.getString("NAME"));
 				 mem.setRoll(rs.getString("ROLL"));
 				 mem.setTeamId(rs.getString("TEAMID"));
-				 mem.setAge(rs.getString("AGE"));
+				 mem.setSsn(rs.getString("SSN"));
 			 }
 		//Exception이 여러개일 경우는 Exception으로 처리, 상위 예외처리, 모든 예외를 한번에 처리
 		}catch (Exception e) {
