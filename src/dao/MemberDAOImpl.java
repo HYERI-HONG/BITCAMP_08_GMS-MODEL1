@@ -1,7 +1,7 @@
 package dao;
 
 import java.sql.*;
-
+import java.util.ArrayList;
 import java.util.List;
 
 import domain.MemberBean;
@@ -38,10 +38,23 @@ public class MemberDAOImpl implements MemberDAO {
 	}
 	@Override
 	public List<MemberBean> selectAllMember() {
-		List<MemberBean> list = null;
+		List<MemberBean> list = new ArrayList<>();
 		try {
-			ResultSet rs = state.executeQuery("SELECT * FROM MEMBER");
+			ResultSet rs = DatabaseFactory.createDatabase(Vendor.ORACLE,DBConstant.USERNAME,DBConstant.PASSWORD)
+					.getConnection()
+					.createStatement()
+					.executeQuery(MemberQuery.SELECT_ALL.toString());
+			MemberBean member = null;
 			while(rs.next()) {
+				member = new MemberBean();
+				member.setUserId(rs.getString("USERID"));
+				member.setTeamId(rs.getString("TEAMID"));
+				member.setName(rs.getString("NAME"));
+				member.setAge(rs.getString("AGE"));
+				member.setRoll(rs.getString("ROLL"));
+				member.setPassword(rs.getString("PASSWORD"));
+				member.setSsn(rs.getString("SSN"));
+				list.add(member);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -51,32 +64,94 @@ public class MemberDAOImpl implements MemberDAO {
 
 	@Override
 	public List<MemberBean> selectMemberByName(String name) {
-		// TODO Auto-generated method stub
-		return null;
+		List<MemberBean> list = new ArrayList<>();
+		
+		try {
+			ResultSet rs = DatabaseFactory.createDatabase(Vendor.ORACLE,DBConstant.USERNAME,DBConstant.PASSWORD)
+					.getConnection()
+					.createStatement()
+					.executeQuery(String.format(MemberQuery.SELECT_SOME.toString(), name));
+			MemberBean member = null;
+			while(rs.next()) {
+				member = new MemberBean();
+				member.setUserId(rs.getString("USERID"));
+				member.setTeamId(rs.getString("TEAMID"));
+				member.setName(rs.getString("NAME"));
+				member.setAge(rs.getString("AGE"));
+				member.setRoll(rs.getString("ROLL"));
+				member.setPassword(rs.getString("PASSWORD"));
+				member.setSsn(rs.getString("SSN"));
+				list.add(member);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return list;
 	}
 
 	@Override
 	public MemberBean selectMemberById(String id) {
-		// TODO Auto-generated method stub
-		return null;
+		MemberBean member = new MemberBean();
+		try {
+			ResultSet rs = DatabaseFactory.createDatabase(Vendor.ORACLE,DBConstant.USERNAME,DBConstant.PASSWORD)
+					.getConnection()
+					.createStatement()
+					.executeQuery(String.format(MemberQuery.SELECT_ONE.toString(),id));
+			while(rs.next()) {
+				member.setUserId(rs.getString("USERID"));
+				member.setTeamId(rs.getString("TEAMID"));
+				member.setName(rs.getString("NAME"));
+				member.setAge(rs.getString("AGE"));
+				member.setRoll(rs.getString("ROLL"));
+				member.setPassword(rs.getString("PASSWORD"));
+				member.setSsn(rs.getString("SSN"));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return member;
 	}
 
 	@Override
 	public int memberCount() {
-		// TODO Auto-generated method stub
-		return 0;
+		int count=0;
+		try {
+			ResultSet rs = DatabaseFactory.createDatabase(Vendor.ORACLE, DBConstant.USERNAME, DBConstant.PASSWORD)
+			.getConnection()
+			.createStatement()
+			.executeQuery(MemberQuery.COUNT_MEMBER.toString());
+			while(rs.next()) {
+				count = rs.getInt("COUNT");
+			}	
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return count;
 	}
 
 	@Override
 	public void updateMember(MemberBean member) {
-		// TODO Auto-generated method stub
-		
+		try {
+			DatabaseFactory.createDatabase(Vendor.ORACLE, DBConstant.USERNAME, DBConstant.PASSWORD)
+			.getConnection()
+			.createStatement()
+			.executeUpdate(String.format(MemberQuery.UPDATE.toString(),member.getPassword().split("/")[1],member.getPassword().split("/")[0],member.getUserId()));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
 	public void deleteMember(MemberBean member) {
-		// TODO Auto-generated method stub
-		
+		try {
+			System.out.println("====\n"+String.format(MemberQuery.DELETE.toString(), member.getUserId(),member.getPassword()));
+			DatabaseFactory.createDatabase(Vendor.ORACLE, DBConstant.USERNAME, DBConstant.PASSWORD)
+			.getConnection()
+			.createStatement()
+			.executeUpdate(String.format(MemberQuery.DELETE.toString(), member.getUserId(),member.getPassword()));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	@Override
 	public MemberBean login(MemberBean bean) {

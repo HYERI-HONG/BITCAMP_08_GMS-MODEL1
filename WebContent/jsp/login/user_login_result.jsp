@@ -30,6 +30,13 @@ HRHONG
 	else{
 		 %><h3>로그인 실패!</h3><%
 	}	
+	
 %>
+<br>
+<a href="../update/update_form.jsp">비밀번호 변경</a>
+<br>
+<a href="../delete/delete_form.jsp">회원 탈퇴</a>
+<br>
+<a href="../../main.jsp">홈으로 가기</a>
 </body>
 </html>

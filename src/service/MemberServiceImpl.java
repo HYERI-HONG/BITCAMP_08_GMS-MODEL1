@@ -17,37 +17,34 @@ public class MemberServiceImpl implements MemberService {
 	}
 	@Override
 	public List<MemberBean> memberList() {
-		// TODO Auto-generated method stub
-		return null;
+		return MemberDAOImpl.getInstance().selectAllMember();
 	}
 
 	@Override
 	public List<MemberBean> findByName(String name) {
-		// TODO Auto-generated method stub
-		return null;
+		return MemberDAOImpl.getInstance().selectMemberByName(name);
 	}
 
 	@Override
 	public MemberBean findById(String id) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		return MemberDAOImpl.getInstance().selectMemberById(id);
 	}
 
 	@Override
 	public int memberCount() {
-		// TODO Auto-generated method stub
-		return 0;
+		return MemberDAOImpl.getInstance().memberCount();
 	}
 
 	@Override
 	public void updateMember(MemberBean member) {
-		// TODO Auto-generated method stub
+		MemberDAOImpl.getInstance().updateMember(member);
 		
 	}
 
 	@Override
 	public void deleteMember(MemberBean member) {
-		// TODO Auto-generated method stub
+		MemberDAOImpl.getInstance().deleteMember(member);
 		
 	}
 	@Override
