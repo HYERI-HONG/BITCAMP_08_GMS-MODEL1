@@ -16,7 +16,7 @@
 </head>
 <body>
 	<%
-	List<MemberBean> list = MemberServiceImpl.getInstance().findByName(request.getParameter("name"));
+	List<MemberBean> list = MemberServiceImpl.getInstance().findByName(request.getParameter("teamname"));
 	%>
 	<table class = "tbl">
 			<tr>
@@ -28,7 +28,7 @@
 				<th>팀이름</th>					
 				<th>역할</th>
 			</tr>
-			<%
+			<%-- <%
 			for(int i=0; i<list.size(); i++){
 			%>
 					<tr>
@@ -42,7 +42,23 @@
 					</tr>
 			<%	
 			} 
+			%> for each문
+			--%>
+			<%
+			for(MemberBean m : list){
 			%>
+					<tr>
+					<td><%=m.getName()%></td>
+					<td><%=m.getUserId()%></td>
+					<td><%=m.getPassword()%></td>
+					<td><%=m.getAge()%></td>
+					<td><%=m.getSsn()%></td>
+					<td><%=m.getTeamId()%></td>
+					<td><%=m.getRoll()%></td>
+					</tr>
+			<%	
+			} 
+			%> 
 		</table>
 </body>
 </html>

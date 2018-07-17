@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@page import="service.MemberServiceImpl"%>
-<%@page import="domain.MemberBean"%>
+<%@page import="service.*"%>
+<%@page import="domain.*"%>
 <%@page import="java.util.*"%>
 
 
@@ -31,8 +31,9 @@
 					<th>팀이름</th>
 					<th>역할</th>
 				</tr>
+			<%-- 이번 버전	
 				<%
-				for(int i=0; i<list.size(); i++){
+				for(int i=0; i<list.size();i++){
 					%>
 						<tr>
 						<td><%=list.get(i).getName()%></td>
@@ -45,7 +46,23 @@
 						</tr>
 					<%	
 				} 
-				%>
+				%> 
+			--%>
+				<%
+					for(MemberBean m : list){
+					%>
+						<tr>
+						<td><%=m.getName()%></td>
+						<td><%=m.getUserId()%></td>
+						<td><%=m.getPassword()%></td>
+						<td><%=m.getAge()%></td>
+						<td><%=m.getSsn()%></td>
+						<td><%=m.getTeamId()%></td>
+						<td><%=m.getRoll()%></td>
+						</tr>
+					<%	
+				} 
+				%> 
 			</table>
 </body>
 </html>
